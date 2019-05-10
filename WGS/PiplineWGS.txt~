@@ -4,62 +4,29 @@
 ##############################################
 # PROJECT URL:
 
-http://diet.ag-ludwig.com/
+http://www.sanger.ac.uk/resources/mouse/genomes/
 
 # CONTACTS:
-For queries about the data bam files and vcf file:
- Ralf.Ludwig@uksh.de
- Yask.Gupta@uksh.de
-
-# Description:
- The file contains workflow, used for the analysis 
- of the whole genome sequencing data of NZM2410/J,
- MRL/MpJ and BxD2/J mouse strains. These strains
- are part of advance intercross line used for 
- revealing gene-diet interaction in complex traits.
- The raw data (FastQ) has deposited in ERA database.
- For any queries please contact aformentioned
- contacts.
-
-# References:
-
- Mauscript is in revision. Once published it will
- be upated.
-
-# Genome
-   data was mapped GRCm38/mm10.
+Prof. Ralf Ludwig 
+Dr. Yask Gupta
 
 
-#####################
-# Detailed workflow #
-#####################
-
-### This is the example workflow for NZM2410/J mice 
-
-## Align the raw to mouse genome and convert it into bam file
 bwa mem -t 24 -M -R "@RG\tID:NZM\tLB:HISEQ\tPL:ILLUMINA\tSM:SA03237" Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa SA03237_S4_L008_R1_001.fastq.gz SA03237_S4_L008_R2_001.fastq.gz | samtools view -bS - > NZM.bam
 
 java -Xmx60g -jar picard.jar BuildBamIndex INPUT=NZM.bam
 
 java -Xmx60g -jar picard.jar SortSam SO=coordinate INPUT=NZM.sort.bam VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true TMP_DIR=/tmp
 
-## Mark and remove the dulicates
 java -Xmx60g -jar picard.jar MarkDuplicates INPUT=NZM.sort.bam OUTPUT=NZM.sort.dedup.bam METRICS_FILE=nzm_metrics.txt REMOVE_DUPLICATES=true VALIDATION_STRINGENCY=LENIENT CREATE_INDEX=true TMP_DIR=/tmp
 
-
-## Align around the indels again
 java -Xmx60g -Djava.io.tmpdir=/tmp -jar GenomeAnalysisTK.jar -T RealignerTargetCreator -R Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa -I NZM.sort.dedup.bam -o NZM.sort.dedup.intervals
 
 java -Xmx60g -Djava.io.tmpdir=/tmp -jar GenomeAnalysisTK.jar -T IndelRealigner -R Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa -I NZM.sort.dedup.bam -targetIntervals NZM.sort.dedup.intervals -o NZM.sort.dedup.realign.bam
 
 java -Xmx60g -Djava.io.tmpdir=/tmp -jar GenomeAnalysisTK.jar -T LeftAlignIndels -R Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa -I NZM.sort.dedup.realign.bam -o NZM.sort.dedup.realign.leftalign.bam
 
-## SNP calling
 samtools view -h -F 0x4 -q 10 NZM.fixed.dedup.realign.left.bam | samtools view -hbS - | samtools mpileup -t DP,DV,DP4,SP,DPR,INFO/DPR -I -E -Q 0 -pm 3 -F 0.25 -d 500 -ug -f Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa | bcftools call -mv -f GQ,GP -p 0.99 -Oz -o NZM.snps.vcf.gz
 
-## Indel calling
 samtools view -h -F 0x4 -q 10 NZM.fixed.dedup.realign.left.bam | samtools view -hbS - | samtools mpileup -t DP,DV,DP4,SP,DPR,INFO/DPR -E -Q 0 -pm 3 -F 0.25 -d 500 -ug -f Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa | bcftools call -mv -f GQ,GP -V snps -p 0.99 -Oz -o NZM.temp.indels.vcf.gz
 
 bcftools norm -f Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa -d indels -s -m +indels -Oz -o NZM.indels.vcf.gz NZM.temp.indels.vcf.gz
-
-
