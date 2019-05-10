@@ -54,6 +54,7 @@ java -Xmx60g -Djava.io.tmpdir=/tmp -jar GenomeAnalysisTK.jar -T IndelRealigner -
 
 java -Xmx60g -Djava.io.tmpdir=/tmp -jar GenomeAnalysisTK.jar -T LeftAlignIndels -R Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa -I NZM.sort.dedup.realign.bam -o NZM.sort.dedup.realign.leftalign.bam
 
+
 ## SNP calling
 samtools view -h -F 0x4 -q 10 NZM.fixed.dedup.realign.left.bam | samtools view -hbS - | samtools mpileup -t DP,DV,DP4,SP,DPR,INFO/DPR -I -E -Q 0 -pm 3 -F 0.25 -d 500 -ug -f Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa | bcftools call -mv -f GQ,GP -p 0.99 -Oz -o NZM.snps.vcf.gz
 
@@ -61,5 +62,8 @@ samtools view -h -F 0x4 -q 10 NZM.fixed.dedup.realign.left.bam | samtools view -
 samtools view -h -F 0x4 -q 10 NZM.fixed.dedup.realign.left.bam | samtools view -hbS - | samtools mpileup -t DP,DV,DP4,SP,DPR,INFO/DPR -E -Q 0 -pm 3 -F 0.25 -d 500 -ug -f Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa | bcftools call -mv -f GQ,GP -V snps -p 0.99 -Oz -o NZM.temp.indels.vcf.gz
 
 bcftools norm -f Mus_musculus/UCSC/mm10/Sequence/BWAIndex/version0.6.0/genome.fa -d indels -s -m +indels -Oz -o NZM.indels.vcf.gz NZM.temp.indels.vcf.gz
+
+#### The following files was created on 10 May 2019 
+
 
 
