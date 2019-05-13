@@ -1,4 +1,5 @@
 #!/usr/bin/env Rscript
+# Copyright (c) 2016 by Yask Gupta, Dept. of Dermatology Lubeck, Germany. All Rights Reserved.
 
 library(DOQTL)
 library(QTLRel)
