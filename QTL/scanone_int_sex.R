@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 #function for fast interaction model
+# Copyright (c) 2016 by Yask Gupta, Dept. of Dermatology Lubeck, Germany. All Rights Reserved.
 source("scanoneIntYask.R")
 
 # load objects array.G.mice,K.G.mice,ncmb.hglm,snp.info
