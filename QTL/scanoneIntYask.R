@@ -1,3 +1,4 @@
+# Copyright (c) 2016 by Yask Gupta, Dept. of Dermatology Lubeck, Germany. All Rights Reserved.
 scanone.int.perm <- function(pheno=NULL,prdat=NULL,snp=NULL,nstr=NULL,nperm=NULL){
  perm.int <- matrix(NA,nrow=nrow(snp),ncol=nperm);
  P <- rep(Inf,nrow(snp));
