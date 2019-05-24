@@ -34,7 +34,7 @@ lnames <- load("/home/yask/artem_data/Mycobiome/RNAseq_raw.RData")
 gene.expr <- gene.expr[,match(microdatTraits$SampleRef,colnames(gene.expr))]
 
 # results for FMC1
-dds.FMC1 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = datTraits.rnaseq,design = ~Sex + FMC1)
+dds.FMC1 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = microdatTraits,design = ~Sex + FMC1)
 dds.FMC1 <- DESeq(dds.FMC1,test="LRT",reduced = ~Sex)
 res.FMC1 <- results(dds.FMC1)
 res.FMC1 <- res.FMC1[order(res.FMC1$padj),]
@@ -42,7 +42,7 @@ res.FMC1 <- cbind(Gene=rownames(res.FMC1),as.data.frame(res.FMC1))
 write.table(subset(res.FMC1,padj < 0.05),file="Results_FMC1_RNAseq.tab",col.names=T,row.names=F,sep="\t",quote=F)
 
 # results for FMC3
-dds.FMC3 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = datTraits.rnaseq,design = ~Sex + FMC3)
+dds.FMC3 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = microdatTraits,design = ~Sex + FMC3)
 dds.FMC3 <- DESeq(dds.FMC3,test="LRT",reduced = ~Sex)
 res.FMC3 <- results(dds.FMC3)
 res.FMC3 <- res.FMC3[order(res.FMC3$padj),]
@@ -50,7 +50,7 @@ res.FMC3 <- cbind(Gene=rownames(res.FMC3),as.data.frame(res.FMC3))
 write.table(subset(res.FMC3,padj < 0.05),file="Results_FMC3_RNAseq.tab",col.names=T,row.names=F,sep="\t",quote=F)
 
 # results for FMC5
-dds.FMC5 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = datTraits.rnaseq,design = ~Sex + FMC5)
+dds.FMC5 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = microdatTraits,design = ~Sex + FMC5)
 dds.FMC5 <- DESeq(dds.FMC5,test="LRT",reduced = ~Sex)
 res.FMC5 <- results(dds.FMC5)
 res.FMC5 <- res.FMC5[order(res.FMC5$padj),]
@@ -58,7 +58,7 @@ res.FMC5 <- cbind(Gene=rownames(res.FMC5),as.data.frame(res.FMC5))
 write.table(subset(res.FMC5,padj < 0.05),file="Results_FMC5_RNAseq.tab",col.names=T,row.names=F,sep="\t",quote=F)
 
 # results for FMC6
-dds.FMC6 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = datTraits.rnaseq,design = ~Sex + FMC6)
+dds.FMC6 <- DESeqDataSetFromMatrix(countData = gene.expr,colData = microdatTraits,design = ~Sex + FMC6)
 dds.FMC6 <- DESeq(dds.FMC6,test="LRT",reduced = ~Sex)
 res.FMC6 <- results(dds.FMC6)
 res.FMC6 <- res.FMC6[order(res.FMC6$padj),]
