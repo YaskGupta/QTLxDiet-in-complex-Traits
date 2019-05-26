@@ -46,7 +46,7 @@ dev.off()
 
 # After that we create a file which contain eigenOTU values and RNAseq data reference together
 # to identify differentially expressed genes for FMCs. "MicroRNAseqTraits.tab"
-# RNAseq_raw.RData contain gene.expr object from DESeq2 analaysis of RNAseq data  
+# RNAseq_raw.RData contain gene.expr object from DESeq2 analaysis of RNAseq data
 lnames <- load("RNAseq_raw.RData")
 
 datTraits.rnaseq <- read.table(file="MycoRNAseqTraits.tab",header=T,sep="\t")
@@ -56,3 +56,12 @@ dds.wgcna.lrt<-DESeq(dds.wgcna.myco,test="LRT",reduced = ~conc + Sex)
 res.wgcna.lrt<-results(dds.wgcna.lrt)
 res.wgcna.lrt<-res.wgcna.lrt[order(res.wgcna.lrt$padj),]
 write.table(subset(res.wgcna.lrt,padj < 0.05),file="Results_FFC4_RNAseq.tab",col.names=T,row.names=F,sep="\t",quote=F)
+
+### This is analysis for FFC6 where samples had ANA phenotype
+datTraits.rnaseq <- read.table(file="SampleTableMycoANA.tab",header=T,sep="\t")
+gene.expr <- gene.expr[,match(datTraits.rnaseq$sampleName,colnames(gene.expr))]
+dds.wgcna.myco <- DESeqDataSetFromMatrix(countData = gene.expr,colData = datTraits.rnaseq,design = ~conc + Sex + FFC6)
+dds.wgcna.lrt<-DESeq(dds.wgcna.myco,test="LRT",reduced = ~conc + Sex)
+res.wgcna.lrt<-results(dds.wgcna.lrt)
+res.wgcna.lrt<-res.wgcna.lrt[order(res.wgcna.lrt$padj),]
+write.table(subset(res.wgcna.lrt,padj < 0.05),file="Results_FFC6_RNAseq.tab",col.names=T,row.names=F,sep="\t",quote=F)
